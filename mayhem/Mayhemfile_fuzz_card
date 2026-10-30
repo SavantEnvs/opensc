@@ -1,0 +1,9 @@
+project: savantenvs/opensc
+target: fuzz_card
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/fuzz_card/testsuite
+cmds:
+  - cmd: /mayhem/fuzz_card
+    libfuzzer: true
+    timeout: 10

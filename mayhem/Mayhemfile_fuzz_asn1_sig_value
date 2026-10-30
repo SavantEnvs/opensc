@@ -1,0 +1,6 @@
+project: savantenvs/opensc
+target: fuzz_asn1_sig_value
+cmds:
+  - cmd: /mayhem/fuzz_asn1_sig_value
+    libfuzzer: true
+    timeout: 10

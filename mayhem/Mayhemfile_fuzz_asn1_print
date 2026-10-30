@@ -1,0 +1,6 @@
+project: savantenvs/opensc
+target: fuzz_asn1_print
+cmds:
+  - cmd: /mayhem/fuzz_asn1_print
+    libfuzzer: true
+    timeout: 10
