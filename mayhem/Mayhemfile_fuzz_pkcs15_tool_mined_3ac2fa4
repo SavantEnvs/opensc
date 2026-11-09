@@ -1,0 +1,10 @@
+# seed-from: https://app.mayhem.security/savantenvs/opensc/fuzz-pkcs15-tool
+project: savantenvs/opensc
+target: fuzz_pkcs15_tool-mined-3ac2fa4
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/fuzz_pkcs15_tool-mined-3ac2fa4/testsuite
+cmds:
+  - cmd: /mayhem/fuzz_pkcs15_tool
+    libfuzzer: true
+    timeout: 10
