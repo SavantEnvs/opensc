@@ -116,6 +116,6 @@ link_all "-standalone" "$OBJ/standalone_main.o" "$SANITIZER_FLAGS" "$OBJ/lsan_of
 # 3) The unit suite (cmocka), built from a separate configure with the project's NORMAL flags.
 cd "$TST"
 (env -u CFLAGS -u LDFLAGS -u CPPFLAGS "$SRC/configure" \
-    --enable-cmocka --enable-openssl --disable-pcsc --disable-man --disable-doc --disable-notify \
+    --enable-cmocka --enable-openssl --disable-pcsc --enable-ctapi --disable-man --disable-doc --disable-notify \
     CC="$CC" CFLAGS="-g -O1 -Wno-error $COVERAGE_FLAGS" LDFLAGS="$COVERAGE_FLAGS")
 (env -u CFLAGS -u LDFLAGS -u CPPFLAGS make -j"$MAYHEM_JOBS" -C . all)
