@@ -75,6 +75,8 @@ mkdir -p "$OBJ" "$TST"
 # `nonnull-attribute` (memcpy(dst, NULL, 0) in pkcs15.c and the fuzz_card/fuzz_asn1_sig_value paths) and `pointer-overflow`
 # (NULL + 0 in pkcs11-object.c). None is memory corruption; OSS-Fuzz's own UBSan set also omits alignment/nonnull/pointer-overflow.
 FUZZ_UBSAN_RELAX="-fno-sanitize=alignment,function,nonnull-attribute,pointer-overflow"
+# Old code (mining BASE) trips -Werror under the current clang (e.g. -Wdeprecated-non-prototype in card-openpgp.c); warnings must not fail the build.
+FUZZ_UBSAN_RELAX="$FUZZ_UBSAN_RELAX -Wno-error"
 cd "$OBJ"
 # configure's own probe programs run under ASan; leak reports there would fail feature checks (build-time only).
 ASAN_OPTIONS=detect_leaks=0 "$SRC/configure" \
@@ -115,5 +117,5 @@ link_all "-standalone" "$OBJ/standalone_main.o" "$SANITIZER_FLAGS" "$OBJ/lsan_of
 cd "$TST"
 (env -u CFLAGS -u LDFLAGS -u CPPFLAGS "$SRC/configure" \
     --enable-cmocka --enable-openssl --disable-pcsc --disable-man --disable-doc --disable-notify \
-    CC="$CC" CFLAGS="-g -O1 $COVERAGE_FLAGS" LDFLAGS="$COVERAGE_FLAGS")
+    CC="$CC" CFLAGS="-g -O1 -Wno-error $COVERAGE_FLAGS" LDFLAGS="$COVERAGE_FLAGS")
 (env -u CFLAGS -u LDFLAGS -u CPPFLAGS make -j"$MAYHEM_JOBS" -C . all)
