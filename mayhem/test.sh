@@ -52,13 +52,16 @@ TST="$SRC/mayhem/build-test"
 UT="$TST/src/tests/unittests"
 TOOLS="$TST/src/tools"
 
-passed=0; failed=0
+passed=0; failed=0; skipped=0
 
 # cmocka suites: every case asserts decoded/encoded values. A suite that prints no summary (e.g. a
 # neutered binary that exits before running) counts as a failure, never a skip.
 for t in asn1 simpletlv cachedir pkcs15filter openpgp-tool decode_ecdsa_signature \
          check_macro_reference_loop strip_pkcs1_2_padding base64 parse_pkcs11_uri compression sm; do
   bin="$UT/$t"
+  # Suites added upstream after this BASE: their sources do not exist here, so they count as skipped, by name.
+  case "$t" in decode_ecdsa_signature|check_macro_reference_loop|strip_pkcs1_2_padding|base64|parse_pkcs11_uri)
+    if [ ! -e "$SRC/src/tests/unittests/$t.c" ]; then echo "SKIP (not in this BASE): $t"; skipped=$((skipped+1)); continue; fi;; esac
   if [ ! -x "$bin" ]; then echo "MISSING unit test binary: $bin" >&2; failed=$((failed+1)); continue; fi
   out=$("$bin" 2>&1); rc=$?
   echo "$out" | tail -3
@@ -90,4 +93,4 @@ kat seq-int-octet $'30 SEQUENCE (6 bytes)\n   02 INTEGER (1 byte): 5\n   04 OCTE
     '\x30\x06\x02\x01\x05\x04\x01\x41'
 kat int-300 $'02 INTEGER (2 bytes): 300' '\x02\x02\x01\x2c'
 
-emit_ctrf "cmocka+kat" "$passed" "$failed" 0
+emit_ctrf "cmocka+kat" "$passed" "$failed" "$skipped"
